@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - 8080:3000
+      - 9229:9229
+    command: npm run start:debug
+    volumes:
+      - /app/node_modues
+      - ./src:/app/src
+    depends_on:
+      - redis
+    env_file: .env
+
+  redis:
+    image: 'redis:alpine'
+    ports:
+      - 6379:${REDIS_PORT}
