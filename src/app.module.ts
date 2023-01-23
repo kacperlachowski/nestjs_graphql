@@ -1,9 +1,9 @@
-import { Module } from '@nestjs/common';
-import { AppService } from './app.service';
-import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { AppResolver } from './app.resolver';
+import { Module } from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
+import { AppResolver } from './app.resolver';
+import { PubsubModule } from './pubsub/pubsub.module';
 
 @Module({
   imports: [
@@ -12,9 +12,13 @@ import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
       typePaths: ['./**/*.graphql'],
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      subscriptions: {
+        'graphql-ws': true,
+      },
     }),
+    PubsubModule,
   ],
   controllers: [],
-  providers: [AppService, AppResolver],
+  providers: [AppResolver],
 })
 export class AppModule {}
