@@ -4,6 +4,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import { AppResolver } from './app.resolver';
 import { PubsubModule } from './pubsub/pubsub.module';
+import { TableModule } from './table/table.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { PubsubModule } from './pubsub/pubsub.module';
       },
     }),
     PubsubModule,
+    TableModule,
   ],
   controllers: [],
   providers: [AppResolver],

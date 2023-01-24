@@ -1,3 +1,21 @@
+# table
+
+type Table {
+  id: Int!
+  name: String!
+  description: String
+}
+
+# schema
+
 type Query {
-  helloWorld: String!
+  table: [Table]
+}
+
+type Mutation {
+  addTable(name: String!, description: String): Table
+}
+
+type Subscription {
+  newTable: Table
 }
