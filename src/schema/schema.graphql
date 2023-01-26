@@ -4,18 +4,42 @@ type Table {
   id: Int!
   name: String!
   description: String
+  columns: [Column]
+  rows: [Row]
+}
+
+# column
+
+type Column {
+  id: Int!
+  name: String!
+  table: Table!
+}
+
+# row
+
+type Row {
+  id: Int!
+  table: Table!
+  values: String!
 }
 
 # schema
 
 type Query {
   table: [Table]
+  column: [Column]
+  row: [Row]
 }
 
 type Mutation {
   addTable(name: String!, description: String): Table
+  addColumn(name: String!, tableId: Int!): Column
+  addRow(values: String!, tableId: Int!): Row
 }
 
 type Subscription {
   newTable: Table
+  newColumn: Column
+  newRow: Row
 }
