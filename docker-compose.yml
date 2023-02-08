@@ -1,5 +1,13 @@
 version: '3.8'
 services:
+  mongodb:
+    image: mongo:latest
+    env_file: .env
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data_container:/data/db
+
   api:
     build:
       dockerfile: Dockerfile
@@ -11,11 +19,15 @@ services:
     volumes:
       - /app/node_modues
       - ./src:/app/src
+    env_file: .env
     depends_on:
       - redis
-    env_file: .env
+      - mongodb
 
   redis:
     image: 'redis:alpine'
     ports:
       - 6379:${REDIS_PORT}
+
+volumes:
+  mongodb_data_container:
