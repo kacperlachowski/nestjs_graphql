@@ -8,28 +8,39 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export enum ColumnType {
+    STRING_COLUMN = "STRING_COLUMN",
+    NUMBER_COLUMN = "NUMBER_COLUMN",
+    BOOLEAN_COLUMN = "BOOLEAN_COLUMN"
+}
+
+export class TableFilters {
+    ids?: Nullable<Nullable<string>[]>;
+    names?: Nullable<Nullable<string>[]>;
+}
+
 export class Table {
-    id: number;
+    _id: string;
     name: string;
     description?: Nullable<string>;
-    columns?: Nullable<Nullable<Column>[]>;
-    rows?: Nullable<Nullable<Row>[]>;
+    columns: Nullable<Column>[];
+    rows: Nullable<Row>[];
 }
 
 export class Column {
-    id: number;
+    _id: string;
     name: string;
     table: Table;
 }
 
 export class Row {
-    id: number;
+    _id: string;
     table: Table;
     values: string;
 }
 
 export abstract class IQuery {
-    abstract table(): Nullable<Nullable<Table>[]> | Promise<Nullable<Nullable<Table>[]>>;
+    abstract tables(filters?: Nullable<TableFilters>): Nullable<Table>[] | Promise<Nullable<Table>[]>;
 
     abstract column(): Nullable<Nullable<Column>[]> | Promise<Nullable<Nullable<Column>[]>>;
 
@@ -37,19 +48,35 @@ export abstract class IQuery {
 }
 
 export abstract class IMutation {
-    abstract addTable(name: string, description?: Nullable<string>): Nullable<Table> | Promise<Nullable<Table>>;
+    abstract createTable(name: string, description?: Nullable<string>): Nullable<Table> | Promise<Nullable<Table>>;
 
-    abstract addColumn(name: string, tableId: number): Nullable<Column> | Promise<Nullable<Column>>;
+    abstract updateTable(id: string, name?: Nullable<string>, description?: Nullable<string>): Nullable<Table> | Promise<Nullable<Table>>;
 
-    abstract addRow(values: string, tableId: number): Nullable<Row> | Promise<Nullable<Row>>;
+    abstract deleteTable(id: string): Nullable<string> | Promise<Nullable<string>>;
+
+    abstract createColumn(tableId: string, name: string, type: ColumnType): Nullable<Column> | Promise<Nullable<Column>>;
+
+    abstract updateColumn(id: string, name?: Nullable<string>, description?: Nullable<string>): Nullable<Column> | Promise<Nullable<Column>>;
+
+    abstract deleteColumn(id: string): Nullable<string> | Promise<Nullable<string>>;
+
+    abstract createRow(tableId: string, values: string): Nullable<Row> | Promise<Nullable<Row>>;
+
+    abstract deleteRow(id: string): Nullable<string> | Promise<Nullable<string>>;
 }
 
 export abstract class ISubscription {
-    abstract newTable(): Nullable<Table> | Promise<Nullable<Table>>;
+    abstract addedTable(): Nullable<Table> | Promise<Nullable<Table>>;
 
-    abstract newColumn(): Nullable<Column> | Promise<Nullable<Column>>;
+    abstract deletedTable(): Nullable<boolean> | Promise<Nullable<boolean>>;
 
-    abstract newRow(): Nullable<Row> | Promise<Nullable<Row>>;
+    abstract addedColumn(): Nullable<Column> | Promise<Nullable<Column>>;
+
+    abstract deletedColumn(): Nullable<boolean> | Promise<Nullable<boolean>>;
+
+    abstract addedRow(): Nullable<Row> | Promise<Nullable<Row>>;
+
+    abstract deletedRow(): Nullable<boolean> | Promise<Nullable<boolean>>;
 }
 
 type Nullable<T> = T | null;
