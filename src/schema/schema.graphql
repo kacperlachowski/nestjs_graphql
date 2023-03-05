@@ -1,3 +1,63 @@
+# table
+input TableFilters {
+  ids: [String]
+  names: [String]
+}
+
+type Table {
+  _id: String!
+  name: String!
+  description: String
+  columns: [Column]!
+  rows: [Row]!
+}
+
+# column
+
+type Column {
+  _id: String!
+  name: String!
+  table: Table!
+}
+
+enum ColumnType {
+  STRING_COLUMN
+  NUMBER_COLUMN
+  BOOLEAN_COLUMN
+}
+
+# row
+
+type Row {
+  _id: String!
+  table: Table!
+  values: String!
+}
+
+# schema
+
 type Query {
-  helloWorld: String!
+  tables(filters: TableFilters): [Table]!
+  column: [Column]
+  row: [Row]
+}
+
+type Mutation {
+  createTable(name: String!, description: String): Table
+  updateTable(id: String!, name: String, description: String): Table
+  deleteTable(id: String!): String
+  createColumn(tableId: String!, name: String!, type: ColumnType!): Column
+  updateColumn(id: String!, name: String, description: String): Column
+  deleteColumn(id: String!): String
+  createRow(tableId: String!, values: String!): Row
+  deleteRow(id: String!): String
+}
+
+type Subscription {
+  addedTable: Table
+  deletedTable: Boolean
+  addedColumn: Column
+  deletedColumn: Boolean
+  addedRow: Row
+  deletedRow: Boolean
 }
