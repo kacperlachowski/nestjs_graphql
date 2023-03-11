@@ -1,3 +1,14 @@
+# auth
+type AuthResponse {
+  user: User
+  token: String
+}
+
+type User {
+  id: ID!
+  username: String!
+}
+
 # table
 input TableFilters {
   ids: [String]
@@ -37,12 +48,15 @@ type Row {
 # schema
 
 type Query {
+  me: User
   tables(filters: TableFilters): [Table]!
   column: [Column]
   row: [Row]
 }
 
 type Mutation {
+  signup(username: String!, password: String!): AuthResponse!
+  login(username: String!, password: String!): AuthResponse!
   createTable(name: String!, description: String): Table
   updateTable(id: String!, name: String, description: String): Table
   deleteTable(id: String!): String
