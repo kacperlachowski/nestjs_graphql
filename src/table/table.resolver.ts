@@ -1,6 +1,7 @@
-import { Inject } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
+import { JwtAuthGuard } from 'src/auth/gql-auth.guard';
 import { PUB_SUB } from 'src/pubsub/pubsub.module';
 import { TableFilters } from './dto/query.input';
 import { Table } from './entities/table.schema';
@@ -18,6 +19,7 @@ export class TableResolver {
     private readonly tableService: TableService,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Query(() => [Table])
   async tables(
     @Args('filters', { nullable: true }) filters?: TableFilters,
@@ -25,16 +27,20 @@ export class TableResolver {
     return await this.tableService.findTables(filters);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => Table)
   async createTable(
     @Args('name') name: string,
     @Args('description', { nullable: true }) description?: string,
   ) {
     const newTable = await this.tableService.create({ name, description });
-    this.pubSub.publish(SUBSCRIPTION_EVENTS.addedTable, { newTable: newTable });
+    this.pubSub.publish(SUBSCRIPTION_EVENTS.addedTable, {
+      addedTable: newTable,
+    });
     return newTable;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => Boolean)
   async deleteTable(@Args('id') id: string) {
     const deletedTable = await this.tableService.deleteTable(id);

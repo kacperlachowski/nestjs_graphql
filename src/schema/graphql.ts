@@ -19,6 +19,16 @@ export class TableFilters {
     names?: Nullable<Nullable<string>[]>;
 }
 
+export class AuthResponse {
+    user?: Nullable<User>;
+    token?: Nullable<string>;
+}
+
+export class User {
+    id: string;
+    username: string;
+}
+
 export class Table {
     _id: string;
     name: string;
@@ -40,6 +50,8 @@ export class Row {
 }
 
 export abstract class IQuery {
+    abstract me(): Nullable<User> | Promise<Nullable<User>>;
+
     abstract tables(filters?: Nullable<TableFilters>): Nullable<Table>[] | Promise<Nullable<Table>[]>;
 
     abstract column(): Nullable<Nullable<Column>[]> | Promise<Nullable<Nullable<Column>[]>>;
@@ -48,6 +60,10 @@ export abstract class IQuery {
 }
 
 export abstract class IMutation {
+    abstract signup(username: string, password: string): AuthResponse | Promise<AuthResponse>;
+
+    abstract login(username: string, password: string): AuthResponse | Promise<AuthResponse>;
+
     abstract createTable(name: string, description?: Nullable<string>): Nullable<Table> | Promise<Nullable<Table>>;
 
     abstract updateTable(id: string, name?: Nullable<string>, description?: Nullable<string>): Nullable<Table> | Promise<Nullable<Table>>;

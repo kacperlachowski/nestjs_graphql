@@ -1,6 +1,7 @@
-import { Inject, NotFoundException } from '@nestjs/common';
+import { Inject, NotFoundException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
+import { JwtAuthGuard } from 'src/auth/gql-auth.guard';
 import { PUB_SUB } from 'src/pubsub/pubsub.module';
 import { TableService } from 'src/table/table.service';
 import { ColumnService } from './column.service';
@@ -21,12 +22,14 @@ export class ColumnResolver {
     private readonly tableService: TableService,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Query()
   async column(@Args('filters') filters?: ColumnQueryInput) {
     const columns = await this.columnService.findColumns(filters);
     return columns;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Mutation()
   async createColumn(
     @Args('tableId') tableId: string,
@@ -45,6 +48,7 @@ export class ColumnResolver {
     return newColumn;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Mutation()
   async updateColumn(
     @Args('columnId') columnId: string,
@@ -66,6 +70,7 @@ export class ColumnResolver {
     return updatedColumn;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => Boolean)
   async deleteColumn(@Args('id') id: string) {
     const deletedColumn = await this.columnService.delete(id);

@@ -1,10 +1,11 @@
-import { Inject, NotFoundException } from '@nestjs/common';
+import { Inject, NotFoundException, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { PUB_SUB } from 'src/pubsub/pubsub.module';
 import { TableService } from 'src/table/table.service';
 import { RowService } from './row.service';
 import { RowQueryInput } from './dto/query.input';
+import { JwtAuthGuard } from 'src/auth/gql-auth.guard';
 
 enum SUBSCRIPTION_EVENTS {
   addedRow = 'addedRow',
@@ -19,12 +20,14 @@ export class RowResolver {
     private readonly tableService: TableService,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Query()
   async row(@Args('filters') filters?: RowQueryInput) {
     const rows = await this.rowService.findRows(filters);
     return rows;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Mutation()
   async createRow(
     @Args('tableId') tableId: string,
@@ -45,6 +48,7 @@ export class RowResolver {
     return newRow;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => Boolean)
   async deleteRow(@Args('id') id: string) {
     const deletedRow = await this.rowService.delete(id);
