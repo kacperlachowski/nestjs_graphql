@@ -38,7 +38,7 @@ export class ColumnService {
   }
 
   async get(ids: string[]) {
-    return this.columnModel.find({ _id: { $in: ids } });
+    return this.columnModel.find({ id: { $in: ids } });
   }
 
   async findColumns(filters?: ColumnQueryInput): Promise<Column[]> {

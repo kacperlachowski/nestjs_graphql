@@ -41,7 +41,7 @@ export class ColumnResolver {
       throw new NotFoundException('Table not found');
     }
     const newColumn = await this.columnService.create({ tableId, name, type });
-    await this.tableService.addColumnToTable(tableId, newColumn._id.toString());
+    await this.tableService.addColumnToTable(tableId, newColumn.id.toString());
     this.pubSub.publish(SUBSCRIPTION_EVENTS.addedColumn, {
       addedColumn: newColumn,
     });

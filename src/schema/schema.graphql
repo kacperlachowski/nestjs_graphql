@@ -16,7 +16,7 @@ input TableFilters {
 }
 
 type Table {
-  _id: String!
+  id: String!
   name: String!
   description: String
   columns: [Column]!
@@ -26,7 +26,7 @@ type Table {
 # column
 
 type Column {
-  _id: String!
+  id: String!
   name: String!
   table: Table!
 }
@@ -40,7 +40,7 @@ enum ColumnType {
 # row
 
 type Row {
-  _id: String!
+  id: String!
   table: Table!
   values: String!
 }
@@ -50,8 +50,8 @@ type Row {
 type Query {
   me: User
   tables(filters: TableFilters): [Table]!
-  column: [Column]
-  row: [Row]
+  column: [Column]!
+  row: [Row]!
 }
 
 type Mutation {
@@ -68,10 +68,10 @@ type Mutation {
 }
 
 type Subscription {
-  addedTable: Table
-  deletedTable: Boolean
-  addedColumn: Column
-  deletedColumn: Boolean
-  addedRow: Row
-  deletedRow: Boolean
+  addedTable: Table!
+  deletedTable: Boolean!
+  addedColumn: Column!
+  deletedColumn: Boolean!
+  addedRow: Row!
+  deletedRow: Boolean!
 }

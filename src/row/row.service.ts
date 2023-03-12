@@ -23,7 +23,7 @@ export class RowService {
   }
 
   async get(ids: string[]) {
-    return this.rowModel.find({ _id: { $in: ids } });
+    return this.rowModel.find({ id: { $in: ids } });
   }
 
   async findRows(filters?: RowQueryInput): Promise<Row[]> {

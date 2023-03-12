@@ -41,7 +41,7 @@ export class RowResolver {
       tableId,
       values: JSON.parse(values),
     });
-    await this.tableService.addRowToTable(tableId, newRow._id.toString());
+    await this.tableService.addRowToTable(tableId, newRow.id.toString());
     this.pubSub.publish(SUBSCRIPTION_EVENTS.addedRow, {
       addedRow: newRow,
     });

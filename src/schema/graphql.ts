@@ -30,7 +30,7 @@ export class User {
 }
 
 export class Table {
-    _id: string;
+    id: string;
     name: string;
     description?: Nullable<string>;
     columns: Nullable<Column>[];
@@ -38,13 +38,13 @@ export class Table {
 }
 
 export class Column {
-    _id: string;
+    id: string;
     name: string;
     table: Table;
 }
 
 export class Row {
-    _id: string;
+    id: string;
     table: Table;
     values: string;
 }
@@ -54,9 +54,9 @@ export abstract class IQuery {
 
     abstract tables(filters?: Nullable<TableFilters>): Nullable<Table>[] | Promise<Nullable<Table>[]>;
 
-    abstract column(): Nullable<Nullable<Column>[]> | Promise<Nullable<Nullable<Column>[]>>;
+    abstract column(): Nullable<Column>[] | Promise<Nullable<Column>[]>;
 
-    abstract row(): Nullable<Nullable<Row>[]> | Promise<Nullable<Nullable<Row>[]>>;
+    abstract row(): Nullable<Row>[] | Promise<Nullable<Row>[]>;
 }
 
 export abstract class IMutation {
@@ -82,17 +82,17 @@ export abstract class IMutation {
 }
 
 export abstract class ISubscription {
-    abstract addedTable(): Nullable<Table> | Promise<Nullable<Table>>;
+    abstract addedTable(): Table | Promise<Table>;
 
-    abstract deletedTable(): Nullable<boolean> | Promise<Nullable<boolean>>;
+    abstract deletedTable(): boolean | Promise<boolean>;
 
-    abstract addedColumn(): Nullable<Column> | Promise<Nullable<Column>>;
+    abstract addedColumn(): Column | Promise<Column>;
 
-    abstract deletedColumn(): Nullable<boolean> | Promise<Nullable<boolean>>;
+    abstract deletedColumn(): boolean | Promise<boolean>;
 
-    abstract addedRow(): Nullable<Row> | Promise<Nullable<Row>>;
+    abstract addedRow(): Row | Promise<Row>;
 
-    abstract deletedRow(): Nullable<boolean> | Promise<Nullable<boolean>>;
+    abstract deletedRow(): boolean | Promise<boolean>;
 }
 
 type Nullable<T> = T | null;
