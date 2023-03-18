@@ -15,8 +15,11 @@ export enum ColumnType {
 }
 
 export class TableFilters {
+    first?: Nullable<number>;
+    offset?: Nullable<number>;
     ids?: Nullable<Nullable<string>[]>;
     names?: Nullable<Nullable<string>[]>;
+    search?: Nullable<string>;
 }
 
 export class AuthResponse {
@@ -37,6 +40,12 @@ export class Table {
     rows: Nullable<Row>[];
 }
 
+export class UpdatedTable {
+    id?: Nullable<string>;
+    name?: Nullable<string>;
+    description?: Nullable<string>;
+}
+
 export class Column {
     id: string;
     name: string;
@@ -53,6 +62,8 @@ export abstract class IQuery {
     abstract me(): Nullable<User> | Promise<Nullable<User>>;
 
     abstract tables(filters?: Nullable<TableFilters>): Nullable<Table>[] | Promise<Nullable<Table>[]>;
+
+    abstract tableCount(filters?: Nullable<TableFilters>): number | Promise<number>;
 
     abstract column(): Nullable<Column>[] | Promise<Nullable<Column>[]>;
 
@@ -84,7 +95,9 @@ export abstract class IMutation {
 export abstract class ISubscription {
     abstract addedTable(): Table | Promise<Table>;
 
-    abstract deletedTable(): boolean | Promise<boolean>;
+    abstract updatedTable(): Nullable<UpdatedTable> | Promise<Nullable<UpdatedTable>>;
+
+    abstract deletedTable(): string | Promise<string>;
 
     abstract addedColumn(): Column | Promise<Column>;
 

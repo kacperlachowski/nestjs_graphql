@@ -11,8 +11,11 @@ type User {
 
 # table
 input TableFilters {
+  first: Int
+  offset: Int
   ids: [String]
   names: [String]
+  search: String
 }
 
 type Table {
@@ -21,6 +24,12 @@ type Table {
   description: String
   columns: [Column]!
   rows: [Row]!
+}
+
+type UpdatedTable {
+  id: String
+  name: String
+  description: String
 }
 
 # column
@@ -50,6 +59,7 @@ type Row {
 type Query {
   me: User
   tables(filters: TableFilters): [Table]!
+  tableCount(filters: TableFilters): Int!
   column: [Column]!
   row: [Row]!
 }
@@ -69,7 +79,8 @@ type Mutation {
 
 type Subscription {
   addedTable: Table!
-  deletedTable: Boolean!
+  updatedTable: UpdatedTable
+  deletedTable: String!
   addedColumn: Column!
   deletedColumn: Boolean!
   addedRow: Row!

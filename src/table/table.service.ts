@@ -14,7 +14,25 @@ export class TableService {
 
   create(createTableInput: CreateTableInput) {
     const table = new this.tableModel(createTableInput);
-    return table.save();
+    return table.save().then((savedTable) => ({
+      ...savedTable.toObject(),
+      id: savedTable._id.toString(),
+    }));
+  }
+
+  async updateTable(
+    tableId: string,
+    updateTableInput: Partial<CreateTableInput>,
+  ): Promise<Table> {
+    const table = await this.tableModel
+      .findByIdAndUpdate(tableId, updateTableInput, { new: true })
+      .exec();
+    return table;
+  }
+
+  async deleteAllTables(): Promise<boolean> {
+    const result = await this.tableModel.deleteMany({}).exec();
+    return result.deletedCount > 0;
   }
 
   async deleteTable(tableId: string): Promise<boolean> {
@@ -22,7 +40,7 @@ export class TableService {
     return table !== null;
   }
 
-  async findTables(filters?: TableFilters): Promise<Table[]> {
+  async countTables(filters?: TableFilters): Promise<number> {
     let query = this.tableModel.find();
 
     if (filters) {
@@ -34,6 +52,36 @@ export class TableService {
       }
     }
 
+    return query.countDocuments().exec();
+  }
+
+  async findTables(filters?: TableFilters): Promise<Table[]> {
+    let query = this.tableModel.find();
+
+    if (filters) {
+      if (filters.name) {
+        query = query.where('name').in(filters.name);
+      }
+
+      if (filters.description) {
+        query = query.where('description').equals(filters.description);
+      }
+
+      if (filters.search) {
+        const searchRegex = new RegExp(`^${filters.search}`, 'i');
+        query = query.where('name').regex(searchRegex);
+      }
+
+      if (typeof filters.first === 'number') {
+        query = query.limit(filters.first);
+      }
+
+      if (typeof filters.offset === 'number') {
+        query = query.skip(filters.offset);
+      }
+    }
+
+    query = query.sort({ createdAt: -1 });
     query = query.populate('columns');
     query = query.populate('rows');
 

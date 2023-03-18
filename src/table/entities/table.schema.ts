@@ -26,6 +26,9 @@ export class Table {
 
   @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: Row.name }])
   rows: RowDocument[];
+
+  @Prop({ default: Date.now })
+  createdAt: Date;
 }
 
 export const TableSchema = SchemaFactory.createForClass(Table);
