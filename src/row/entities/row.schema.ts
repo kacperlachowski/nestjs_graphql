@@ -16,6 +16,9 @@ export class Row {
     set: (values: MongooseSchema.Types.Mixed) => values,
   })
   values: MongooseSchema.Types.Mixed;
+
+  @Prop({ default: Date.now })
+  createdAt: Date;
 }
 
 export const RowSchema = SchemaFactory.createForClass(Row);

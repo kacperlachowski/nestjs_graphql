@@ -14,7 +14,7 @@ export class RowService {
 
   async create(createRowInput: CreateRowInput) {
     const row = new this.rowModel(createRowInput);
-    return row.save();
+    return row.save().then((row) => row);
   }
 
   async delete(rowId: string): Promise<boolean> {
@@ -26,6 +26,11 @@ export class RowService {
     return this.rowModel.find({ id: { $in: ids } });
   }
 
+  async deleteAllTables(): Promise<boolean> {
+    const result = await this.rowModel.deleteMany({}).exec();
+    return result.deletedCount > 0;
+  }
+
   async findRows(filters?: RowQueryInput): Promise<Row[]> {
     let query = this.rowModel.find();
 
@@ -33,11 +38,9 @@ export class RowService {
       if (filters.names) {
         query = query.where('name').in(filters.names);
       }
-      // if (filters.description) {
-      //   query = query.where('description').equals(filters.description);
-      // }
     }
 
+    query = query.sort({ createdAt: -1 });
     return await query.exec();
   }
 }

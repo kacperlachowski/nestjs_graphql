@@ -13,6 +13,10 @@ export class Column {
   @Prop({ required: true })
   @Field(() => String)
   name: string;
+
+  @Prop({ required: true })
+  @Field(() => String)
+  type: string;
 }
 
 export const ColumnSchema = SchemaFactory.createForClass(Column);

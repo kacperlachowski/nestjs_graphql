@@ -22,6 +22,14 @@ export class TableFilters {
     search?: Nullable<string>;
 }
 
+export class TableFiltersFindOne {
+    id: string;
+}
+
+export class ColumnFilters {
+    tableId?: Nullable<string>;
+}
+
 export class AuthResponse {
     user?: Nullable<User>;
     token?: Nullable<string>;
@@ -50,6 +58,7 @@ export class Column {
     id: string;
     name: string;
     table: Table;
+    type: ColumnType;
 }
 
 export class Row {
@@ -63,9 +72,11 @@ export abstract class IQuery {
 
     abstract tables(filters?: Nullable<TableFilters>): Nullable<Table>[] | Promise<Nullable<Table>[]>;
 
+    abstract table(filters: TableFiltersFindOne): Nullable<Table> | Promise<Nullable<Table>>;
+
     abstract tableCount(filters?: Nullable<TableFilters>): number | Promise<number>;
 
-    abstract column(): Nullable<Column>[] | Promise<Nullable<Column>[]>;
+    abstract column(filters?: Nullable<ColumnFilters>): Nullable<Column>[] | Promise<Nullable<Column>[]>;
 
     abstract row(): Nullable<Row>[] | Promise<Nullable<Row>[]>;
 }

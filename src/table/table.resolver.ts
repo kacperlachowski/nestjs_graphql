@@ -4,6 +4,7 @@ import { RedisPubSub } from 'graphql-redis-subscriptions';
 import { JwtAuthGuard } from 'src/auth/gql-auth.guard';
 import { PUB_SUB } from 'src/pubsub/pubsub.module';
 import { TableFilters } from './dto/query.input';
+import { TableFiltersFindOne } from './dto/queryFindOne.input';
 import { Table } from './entities/table.schema';
 import { TableService } from './table.service';
 
@@ -26,6 +27,14 @@ export class TableResolver {
     @Args('filters', { nullable: true }) filters?: TableFilters,
   ): Promise<Table[]> {
     return await this.tableService.findTables(filters);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Query(() => Table)
+  async table(
+    @Args('filters', { nullable: false }) filters: TableFiltersFindOne,
+  ): Promise<Table | null> {
+    return await this.tableService.findOne(filters);
   }
 
   @UseGuards(JwtAuthGuard)
