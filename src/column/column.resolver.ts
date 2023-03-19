@@ -25,6 +25,9 @@ export class ColumnResolver {
   @UseGuards(JwtAuthGuard)
   @Query()
   async column(@Args('filters') filters?: ColumnQueryInput) {
+    // const table = await this.tableService.findOneById(filters.tableId);
+    // const columnIds = table.columns.map((column) => column.id.toString());
+    // return this.columnService.get(columnIds);
     const columns = await this.columnService.findColumns(filters);
     return columns;
   }
@@ -43,7 +46,12 @@ export class ColumnResolver {
     const newColumn = await this.columnService.create({ tableId, name, type });
     await this.tableService.addColumnToTable(tableId, newColumn.id.toString());
     this.pubSub.publish(SUBSCRIPTION_EVENTS.addedColumn, {
-      addedColumn: newColumn,
+      addedColumn: {
+        ...newColumn,
+        table: {
+          id: tableId,
+        },
+      },
     });
     return newColumn;
   }

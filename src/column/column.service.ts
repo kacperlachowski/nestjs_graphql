@@ -15,7 +15,10 @@ export class ColumnService {
 
   async create(createColumnInput: CreateColumnInput) {
     const column = new this.columnModel(createColumnInput);
-    return column.save();
+    return column.save().then((column) => ({
+      ...column.toObject(),
+      id: column._id.toString(),
+    }));
   }
 
   async update(updateColumnInput: UpdateColumnInput): Promise<Column> {
@@ -45,12 +48,13 @@ export class ColumnService {
     let query = this.columnModel.find();
 
     if (filters) {
+      if (filters.tableId) {
+        query = query.where('tableId').equals(filters.tableId);
+      }
+
       if (filters.names) {
         query = query.where('name').in(filters.names);
       }
-      // if (filters.description) {
-      //   query = query.where('description').equals(filters.description);
-      // }
     }
 
     return await query.exec();

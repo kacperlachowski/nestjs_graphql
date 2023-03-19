@@ -18,6 +18,10 @@ input TableFilters {
   search: String
 }
 
+input TableFiltersFindOne {
+  id: String!
+}
+
 type Table {
   id: String!
   name: String!
@@ -33,11 +37,15 @@ type UpdatedTable {
 }
 
 # column
+input ColumnFilters {
+  tableId: String
+}
 
 type Column {
   id: String!
   name: String!
   table: Table!
+  type: ColumnType!
 }
 
 enum ColumnType {
@@ -59,8 +67,9 @@ type Row {
 type Query {
   me: User
   tables(filters: TableFilters): [Table]!
+  table(filters: TableFiltersFindOne!): Table
   tableCount(filters: TableFilters): Int!
-  column: [Column]!
+  column(filters: ColumnFilters): [Column]!
   row: [Row]!
 }
 

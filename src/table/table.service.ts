@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateTableInput } from './dto/create.input';
 import { TableFilters } from './dto/query.input';
+import { TableFiltersFindOne } from './dto/queryFindOne.input';
 import { Table } from './entities/table.schema';
 
 @Injectable()
@@ -53,6 +54,17 @@ export class TableService {
     }
 
     return query.countDocuments().exec();
+  }
+
+  async findOne(filters?: TableFiltersFindOne): Promise<Table | null> {
+    let query = this.tableModel.findById(filters.id);
+
+    query = query.sort({ createdAt: -1 });
+    query = query.populate('columns');
+    query = query.populate('rows');
+
+    return await query.exec();
+    // return this.tableModel.findById(filters.id).exec();
   }
 
   async findTables(filters?: TableFilters): Promise<Table[]> {
