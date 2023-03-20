@@ -1,0 +1,97 @@
+# auth
+type AuthResponse {
+  user: User
+  token: String
+}
+
+type User {
+  id: ID!
+  username: String!
+}
+
+# table
+input TableFilters {
+  first: Int
+  offset: Int
+  ids: [String]
+  names: [String]
+  search: String
+}
+
+input TableFiltersFindOne {
+  id: String!
+}
+
+type Table {
+  id: String!
+  name: String!
+  description: String
+  columns: [Column]!
+  rows: [Row]!
+}
+
+type UpdatedTable {
+  id: String
+  name: String
+  description: String
+}
+
+# column
+input ColumnFilters {
+  tableId: String
+}
+
+type Column {
+  id: String!
+  name: String!
+  table: Table!
+  type: ColumnType!
+}
+
+enum ColumnType {
+  STRING_COLUMN
+  NUMBER_COLUMN
+  BOOLEAN_COLUMN
+}
+
+# row
+
+type Row {
+  id: String!
+  table: Table!
+  values: String!
+}
+
+# schema
+
+type Query {
+  me: User
+  tables(filters: TableFilters): [Table]!
+  table(filters: TableFiltersFindOne!): Table
+  tableCount(filters: TableFilters): Int!
+  column(filters: ColumnFilters): [Column]!
+  row: [Row]!
+}
+
+type Mutation {
+  signup(username: String!, password: String!): AuthResponse!
+  login(username: String!, password: String!): AuthResponse!
+  createTable(name: String!, description: String): Table
+  updateTable(id: String!, name: String, description: String): Table
+  deleteTable(id: String!): String
+  createColumn(tableId: String!, name: String!, type: ColumnType!): Column
+  updateColumn(id: String!, name: String, description: String): Column
+  deleteColumn(id: String!): String
+  createRow(tableId: String!, values: String!): Row
+  deleteRow(id: String!): String
+}
+
+type Subscription {
+  addedTable: Table!
+  updatedTable: UpdatedTable
+  deletedTable: String!
+  addedColumn: Column!
+  deletedColumn: Boolean!
+  addedRow: Row!
+  deletedRow: Boolean!
+}
